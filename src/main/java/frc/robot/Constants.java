@@ -20,40 +20,37 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
  */
 public final class Constants {
   public static final class DriveConstants {
-    public static final int kRightMotor1ID = 1;
-    public static final int kRightMotor2ID = 2;
-    public static final int kLeftMotor1ID = 3;
-    public static final int kLeftMotor2ID = 4;
-    public static final int kGyroID = 5;
+    public static final int RIGHT_LEAD_MOTOR_ID = 1;
+    public static final int RIGHT_FOLLOWER_MOTOR_ID = 2;
+    public static final int LEFT_LEAD_MOTOR_ID = 3;
+    public static final int LEFT_FOLLOWER_MOTOR_ID = 4;
+    public static final int GYRO_ID = 5;
 
-    public static final int[] kLeftEncoderPorts = new int[] { 0, 1 };
-    public static final int[] kRightEncoderPorts = new int[] { 2, 3 };
-    public static final boolean kLeftEncoderReversed = true;
-    public static final boolean kRightEncoderReversed = false;
+    public static final boolean LEFT_SIDE_REVERSED = true;
+    public static final boolean RIGHT_SIDE_REVERSED = false;
 
     // Intializes an object that can use the trackwidth (horizontal distance between
     // wheels) to convert from chassis speeds to wheel speeds
-    public static final double kTrackWidthMeters = 0.62;
-    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
-        kTrackWidthMeters);
+    public static final double TRACK_WIDTH = 0.62;
+    public static final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
 
     // ? The counts per rotation of the encoders.
-    public static final int kEncoderCPR = 2048;
-    public static final double kWheelDiameterMeters = 0.1016;
-    public static final double kGearReduction = 7.09;
+    public static final int ENCODER_CPR = 2048;
+    public static final double WHEEL_DIAMETER = 0.1016;
+    public static final double GEAR_REDUCTION = 7.09;
     // The amount of meters traveled per pulse of the encoder
-    public static final double kEncoderDistancePerPulse = ((kWheelDiameterMeters * Math.PI) / kGearReduction)
-        / (double) kEncoderCPR;
+    public static final double ENCODER_DISTANCE_PER_PULSE = ((WHEEL_DIAMETER * Math.PI) / GEAR_REDUCTION)
+        / (double) ENCODER_CPR;
 
     // ? Constants found by running a characterization routine (SysId).
     // These constants define how the robot reacts to input in the real world.
     // For example, how the robot actually accelerates on carpet.
-    public static final double ksVolts = 0.55;
-    public static final double kvVoltSecondsPerMeter = 2.43;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.15;
+    public static final double KS = 0.55;
+    public static final double KV = 2.43;
+    public static final double KA = 0.15;
 
     // Kp constant found through Feedback Analysis in SysId.
-    public static final double kPDriveVel = 2.53;
+    public static final double KP = 2.53;
   }
 
   public static final class OIConstants {
@@ -65,14 +62,14 @@ public final class Constants {
     // The maximum speed must be less than the nominal free-speed of the robot.
     // The maximum acceleration is not crucial, but should stil be reasonable.
     // Nominal theoretical free speed = 4.79 m/s
-    public static final double kMaxSpeedMetersPerSecond = 3.5;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double MAX_SPEED = 3.5;
+    public static final double MAX_ACCELERATION = 3;
 
     // ? Parameters for the RAMSETE controller used for path following.
     // These are passed directly to the controller on initialization.
     // These values are robot agnostic, meaning they should not change between
     // robots.
-    public static final double kRamseteB = 2;
-    public static final double kRamseteZeta = 0.7;
+    public static final double RAMSETE_B = 2;
+    public static final double RAMSETE_ZETA = 0.7;
   }
 }
