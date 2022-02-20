@@ -34,23 +34,25 @@ public final class Constants {
     public static final double TRACK_WIDTH = 0.62;
     public static final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
 
-    // ? The counts per rotation of the encoders.
+    // ? The counts per rotation of the drive encoders.
     public static final int ENCODER_CPR = 2048;
     public static final double WHEEL_DIAMETER = 0.1016;
+    public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     public static final double GEAR_REDUCTION = 7.09;
+
     // The amount of meters traveled per pulse of the encoder
-    public static final double ENCODER_DISTANCE_PER_PULSE = ((WHEEL_DIAMETER * Math.PI) / GEAR_REDUCTION)
+    public static final double ENCODER_DISTANCE_PER_PULSE = (WHEEL_CIRCUMFERENCE / GEAR_REDUCTION)
         / (double) ENCODER_CPR;
 
     // ? Constants found by running a characterization routine (SysId).
-    // These constants define how the robot reacts to input in the real world.
-    // For example, how the robot actually accelerates on carpet.
-    public static final double KS = 0.55;
-    public static final double KV = 2.43;
-    public static final double KA = 0.15;
+    // Feed forward analysis, defines how the robot responds to inputs to the motor
+    // controllers.
+    public static final double KS = 0.61;
+    public static final double KV = 2.35;
+    public static final double KA = 0.34;
 
     // Kp constant found through Feedback Analysis in SysId.
-    public static final double KP = 2.53;
+    public static final double KP = 2.46;
   }
 
   public static final class OIConstants {
@@ -62,8 +64,8 @@ public final class Constants {
     // The maximum speed must be less than the nominal free-speed of the robot.
     // The maximum acceleration is not crucial, but should stil be reasonable.
     // Nominal theoretical free speed = 4.79 m/s
-    public static final double MAX_SPEED = 3.5;
-    public static final double MAX_ACCELERATION = 3;
+    public static final double MAX_SPEED = 2;
+    public static final double MAX_ACCELERATION = 2;
 
     // ? Parameters for the RAMSETE controller used for path following.
     // These are passed directly to the controller on initialization.

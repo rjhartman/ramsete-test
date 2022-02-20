@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
@@ -13,8 +14,8 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.motorcontrol.Luna_TalonFX;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -35,7 +36,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors);
 
   // The gyro sensor
-  private final Gyro gyro = new WPI_PigeonIMU(0);
+  private final WPI_PigeonIMU gyro = new WPI_PigeonIMU(new TalonSRX(DriveConstants.GYRO_ID));
 
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry odometry;
@@ -52,15 +53,21 @@ public class DriveSubsystem extends SubsystemBase {
     // m_leftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
     // m_rightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
 
-    // resetEncoders();
+    resetEncoders();
     odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
   }
 
   @Override
   public void periodic() {
-    // Update the odometry in the periodic block
+    SmartDashboard.putString("Encoder Distances (m)",
+        "L: " + -leftMotor.getDistance() + " R: " + rightMotor.getDistance());
+    SmartDashboard.putString("Encoder Velocities (m/s)",
+        "L: " + leftMotor.getRate() + " R: " + rightMotor.getRate());
+    SmartDashboard.putString("Gyro Rotation (deg)", this.gyro.getRotation2d().getDegrees() + "");
+    SmartDashboard.putString("Pose", this.getPose().toString());
+
     odometry.update(gyro.getRotation2d(),
-        leftMotor.getDistance(),
+        -leftMotor.getDistance(),
         rightMotor.getDistance());
   }
 
@@ -90,7 +97,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    // resetEncoders();
+    resetEncoders();
     odometry.resetPosition(pose, gyro.getRotation2d());
   }
 
@@ -117,10 +124,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
-  // public void resetEncoders() {
-  // m_leftEncoder.reset();
-  // m_rightEncoder.reset();
-  // }
+  public void resetEncoders() {
+    leftMotor.setSelectedSensorPosition(0);
+    rightMotor.setSelectedSensorPosition(0);
+  }
 
   /**
    * Gets the average distance of the two encoders.
@@ -128,7 +135,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the average of the two encoder readings
    */
   public double getAverageEncoderDistance() {
-    return (leftMotor.getDistance() + rightMotor.getDistance()) / 2.0;
+    return (-leftMotor.getDistance() + rightMotor.getDistance()) / 2.0;
   }
 
   /**

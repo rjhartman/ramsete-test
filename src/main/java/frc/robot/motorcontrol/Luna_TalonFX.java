@@ -1,6 +1,6 @@
 package frc.robot.motorcontrol;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import frc.robot.Constants.DriveConstants;
 
@@ -9,7 +9,7 @@ import frc.robot.Constants.DriveConstants;
  * helpful functions like getRate and getDistance for the
  * integrated encoder.
  */
-public class Luna_TalonFX extends TalonFX {
+public class Luna_TalonFX extends WPI_TalonFX {
 
     /**
      * A default constructor needed to compile. DO NOT USE THIS CONSTRUCTOR.
@@ -35,7 +35,7 @@ public class Luna_TalonFX extends TalonFX {
      * @return the selected sensor's velocity in meters per second.
      */
     public double getRate() {
-        return getSelectedSensorVelocity() * DriveConstants.ENCODER_DISTANCE_PER_PULSE * 10;
+        return this.getSelectedSensorVelocity() * DriveConstants.ENCODER_DISTANCE_PER_PULSE;
     }
 
     /**
@@ -44,6 +44,6 @@ public class Luna_TalonFX extends TalonFX {
      * @return the selected sensor's distance in meters.
      */
     public double getDistance() {
-        return getSelectedSensorPosition() * DriveConstants.ENCODER_DISTANCE_PER_PULSE * 10;
+        return this.getSelectedSensorPosition() * DriveConstants.ENCODER_DISTANCE_PER_PULSE;
     }
 }
