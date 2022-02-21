@@ -64,7 +64,7 @@ public final class Constants {
     // The maximum speed must be less than the nominal free-speed of the robot.
     // The maximum acceleration is not crucial, but should stil be reasonable.
     // Nominal theoretical free speed = 4.79 m/s
-    public static final double MAX_SPEED = 2;
+    public static final double MAX_SPEED = 0.25;
     public static final double MAX_ACCELERATION = 2;
 
     // ? Parameters for the RAMSETE controller used for path following.
