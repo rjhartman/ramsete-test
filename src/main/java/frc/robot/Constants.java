@@ -53,8 +53,11 @@ public final class Constants {
     public static final double KP = 2.53;
   }
 
-  public static final class OIConstants {
+  public static final class IOConstants {
     public static final int kDriverControllerPort = 0;
+
+    // Add diagnostics to ShuffleBoard where appropriate
+    public static final boolean ENABLE_DIAGNOSTICS = false;
   }
 
   public static final class AutoConstants {

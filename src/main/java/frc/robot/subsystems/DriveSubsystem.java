@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
@@ -12,24 +13,28 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IOConstants;
 import frc.robot.motorcontrol.Luna_TalonFX;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
-  private final Luna_TalonFX leftMotor = new Luna_TalonFX(DriveConstants.LEFT_LEAD_MOTOR_ID);
-  private final Luna_TalonFX rightMotor = new Luna_TalonFX(DriveConstants.RIGHT_LEAD_MOTOR_ID);
+  private final Luna_TalonFX leftLeadMotor = new Luna_TalonFX(DriveConstants.LEFT_LEAD_MOTOR_ID);
+  private final Luna_TalonFX leftFollowerMotor = new Luna_TalonFX(DriveConstants.LEFT_FOLLOWER_MOTOR_ID);
+  private final Luna_TalonFX rightLeadMotor = new Luna_TalonFX(DriveConstants.RIGHT_LEAD_MOTOR_ID);
+  private final Luna_TalonFX rightFollowerMotor = new Luna_TalonFX(DriveConstants.RIGHT_FOLLOWER_MOTOR_ID);
 
   // The motors on the left side of the drive.
   private final MotorControllerGroup leftMotors = new MotorControllerGroup(
-      new WPI_TalonFX(DriveConstants.LEFT_LEAD_MOTOR_ID),
-      new WPI_TalonFX(DriveConstants.LEFT_FOLLOWER_MOTOR_ID));
+      leftLeadMotor,
+      leftFollowerMotor);
 
   // The motors on the right side of the drive.
   private final MotorControllerGroup rightMotors = new MotorControllerGroup(
-      new WPI_TalonFX(DriveConstants.RIGHT_LEAD_MOTOR_ID),
-      new WPI_TalonFX(DriveConstants.RIGHT_FOLLOWER_MOTOR_ID));
+      rightLeadMotor,
+      rightFollowerMotor);
 
   // The robot's drive
   private final DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors);
@@ -40,6 +45,14 @@ public class DriveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry odometry;
 
+  private double getAverageRightEncoderDistance() {
+    return (rightLeadMotor.getDistance() + rightFollowerMotor.getDistance()) / 2.0;
+  }
+
+  private double getAverageLeftEncoderDistance() {
+    return (leftLeadMotor.getDistance() + leftFollowerMotor.getDistance()) / 2.0;
+  }
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // We need to invert one side of the drivetrain so that positive voltages
@@ -48,20 +61,36 @@ public class DriveSubsystem extends SubsystemBase {
     leftMotors.setInverted(DriveConstants.LEFT_SIDE_REVERSED);
     rightMotors.setInverted(DriveConstants.RIGHT_SIDE_REVERSED);
 
+    // Reverse the encoders on the left/right motor,
+    leftLeadMotor.setSensorPhase(DriveConstants.LEFT_SIDE_REVERSED);
+    leftFollowerMotor.setSensorPhase(DriveConstants.LEFT_SIDE_REVERSED);
+    rightLeadMotor.setSensorPhase(DriveConstants.RIGHT_SIDE_REVERSED);
+    rightFollowerMotor.setSensorPhase(DriveConstants.RIGHT_SIDE_REVERSED);
+
     // Sets the distance per pulse for the encoders
     // m_leftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
     // m_rightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
 
-    // resetEncoders();
+    resetEncoders();
     odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
   }
 
   @Override
   public void periodic() {
+
+    if (IOConstants.ENABLE_DIAGNOSTICS) {
+      SmartDashboard.putString("Encoder Distances (m)",
+          "L: " + leftLeadMotor.getDistance() + " R: " + rightLeadMotor.getDistance());
+      SmartDashboard.putString("Encoder Velocities (m/s)",
+          "L: " + leftLeadMotor.getRate() + " R: " + rightLeadMotor.getRate());
+      SmartDashboard.putString("Gyro Rotation (deg)", this.gyro.getRotation2d().getDegrees() + "");
+      SmartDashboard.putString("Pose", this.getPose().toString());
+    }
+
     // Update the odometry in the periodic block
     odometry.update(gyro.getRotation2d(),
-        leftMotor.getDistance(),
-        rightMotor.getDistance());
+        leftLeadMotor.getDistance(),
+        rightLeadMotor.getDistance());
   }
 
   /**
@@ -80,8 +109,8 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(
-        leftMotor.getRate(),
-        rightMotor.getRate());
+        leftLeadMotor.getRate(),
+        rightLeadMotor.getRate());
   }
 
   /**
@@ -90,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    // resetEncoders();
+    resetEncoders();
     odometry.resetPosition(pose, gyro.getRotation2d());
   }
 
@@ -117,10 +146,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
-  // public void resetEncoders() {
-  // m_leftEncoder.reset();
-  // m_rightEncoder.reset();
-  // }
+  public void resetEncoders() {
+    leftLeadMotor.reset();
+    rightLeadMotor.reset();
+  }
 
   /**
    * Gets the average distance of the two encoders.
@@ -128,7 +157,8 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the average of the two encoder readings
    */
   public double getAverageEncoderDistance() {
-    return (leftMotor.getDistance() + rightMotor.getDistance()) / 2.0;
+    // Flip the encoder on the left side
+    return (getAverageLeftEncoderDistance() + getAverageRightEncoderDistance()) / 2.0;
   }
 
   /**
