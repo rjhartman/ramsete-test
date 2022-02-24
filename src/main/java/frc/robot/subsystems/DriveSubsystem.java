@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -38,7 +39,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors);
 
   // The gyro sensor
-  private final Gyro gyro = new WPI_PigeonIMU(0);
+  private final Gyro gyro = new WPI_PigeonIMU(new TalonSRX(DriveConstants.GYRO_ID));
 
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry odometry;
@@ -46,8 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // We need to invert one side of the drivetrain so that positive voltages
-    // result in both sides moving forward. Depending on how your robot's
-    // gearbox is constructed, you might have to invert the left side instead.
+    // result in both sides moving forward.
     leftMotors.setInverted(DriveConstants.LEFT_SIDE_REVERSED);
     rightMotors.setInverted(DriveConstants.RIGHT_SIDE_REVERSED);
 
@@ -149,7 +149,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the average of the two encoder readings
    */
   public double getAverageEncoderDistance() {
-    // Flip the encoder on the left side
     return (leftLeadMotor.getDistance() + leftFollowerMotor.getDistance() + rightLeadMotor.getDistance()
         + rightFollowerMotor.getDistance()) / 4.0;
   }
