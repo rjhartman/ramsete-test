@@ -35,7 +35,7 @@ public class Luna_TalonFX extends WPI_TalonFX {
      * @return the selected sensor's velocity in meters per second.
      */
     public double getRate() {
-        return getSelectedSensorVelocity() * DriveConstants.ENCODER_DISTANCE_PER_PULSE * 10;
+        return getSelectedSensorVelocity() * DriveConstants.ENCODER_DISTANCE_PER_PULSE;
     }
 
     /**
@@ -44,7 +44,7 @@ public class Luna_TalonFX extends WPI_TalonFX {
      * @return the selected sensor's distance in meters.
      */
     public double getDistance() {
-        return getSelectedSensorPosition() * DriveConstants.ENCODER_DISTANCE_PER_PULSE * 10;
+        return getSelectedSensorPosition() * DriveConstants.ENCODER_DISTANCE_PER_PULSE;
     }
 
     /**
