@@ -70,10 +70,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     if (IOConstants.ENABLE_DIAGNOSTICS) {
       SmartDashboard.putString("Encoder Distances (m)",
-          "L: " + leftLeadMotor.getDistance() + " R: " + rightLeadMotor.getDistance());
+          "L: " + Double.toString(leftLeadMotor.getDistance()) + " R: "
+              + Double.toString(rightLeadMotor.getDistance()));
+      SmartDashboard.putString("Average Encoder Distance (m)",
+          Double.toString(getAverageEncoderDistance()));
       SmartDashboard.putString("Encoder Velocities (m/s)",
-          "L: " + leftLeadMotor.getRate() + " R: " + rightLeadMotor.getRate());
-      SmartDashboard.putString("Gyro Rotation (deg)", this.gyro.getRotation2d().getDegrees() + "");
+          "L: " + Double.toString(leftLeadMotor.getRate()) + " R: " + Double.toString(rightLeadMotor.getRate()));
+      SmartDashboard.putString("Gyro Rotation (deg)", Double.toString(this.gyro.getRotation2d().getDegrees()) + "");
       SmartDashboard.putString("Pose", this.getPose().toString());
     }
 
