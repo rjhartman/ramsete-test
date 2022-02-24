@@ -1,6 +1,5 @@
 package frc.robot.motorcontrol;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import frc.robot.Constants.DriveConstants;

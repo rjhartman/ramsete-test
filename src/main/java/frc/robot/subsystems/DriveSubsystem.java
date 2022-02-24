@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -44,14 +42,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry odometry;
-
-  private double getAverageRightEncoderDistance() {
-    return (rightLeadMotor.getDistance() + rightFollowerMotor.getDistance()) / 2.0;
-  }
-
-  private double getAverageLeftEncoderDistance() {
-    return (leftLeadMotor.getDistance() + leftFollowerMotor.getDistance()) / 2.0;
-  }
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -148,7 +138,9 @@ public class DriveSubsystem extends SubsystemBase {
   /** Resets the drive encoders to currently read a position of 0. */
   public void resetEncoders() {
     leftLeadMotor.reset();
+    leftFollowerMotor.reset();
     rightLeadMotor.reset();
+    rightFollowerMotor.reset();
   }
 
   /**
@@ -158,7 +150,8 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getAverageEncoderDistance() {
     // Flip the encoder on the left side
-    return (getAverageLeftEncoderDistance() + getAverageRightEncoderDistance()) / 2.0;
+    return (leftLeadMotor.getDistance() + leftFollowerMotor.getDistance() + rightLeadMotor.getDistance()
+        + rightFollowerMotor.getDistance()) / 4.0;
   }
 
   /**
