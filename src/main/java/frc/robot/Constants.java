@@ -59,7 +59,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
 
     // Add diagnostics to ShuffleBoard where appropriate
-    public static final boolean ENABLE_DIAGNOSTICS = false;
+    public static final boolean ENABLE_DIAGNOSTICS = true;
   }
 
   public static final class AutoConstants {

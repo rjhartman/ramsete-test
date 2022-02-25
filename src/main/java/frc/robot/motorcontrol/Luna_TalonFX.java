@@ -12,8 +12,10 @@ import frc.robot.Constants.DriveConstants;
 public class Luna_TalonFX extends WPI_TalonFX {
 
     /**
-     * A default constructor needed to compile. DO NOT USE THIS CONSTRUCTOR.
-     * A TalonFX cannot be instantiated without parameters.
+     * A default constructor needed to compile, since WPI_TalonFX doesn't define a
+     * default constructor.
+     * DO NOT USE THIS CONSTRUCTOR. A TalonFX cannot be instantiated without
+     * parameters.
      */
     public Luna_TalonFX() {
         super(-1);

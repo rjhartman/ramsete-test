@@ -48,14 +48,18 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward.
-    leftMotors.setInverted(DriveConstants.LEFT_SIDE_REVERSED);
-    rightMotors.setInverted(DriveConstants.RIGHT_SIDE_REVERSED);
+    // leftMotors.setInverted(DriveConstants.LEFT_SIDE_REVERSED);
+    // rightMotors.setInverted(DriveConstants.RIGHT_SIDE_REVERSED);
 
-    // Reverse the encoders on the left/right motor,
     leftLeadMotor.setSensorPhase(DriveConstants.LEFT_SIDE_REVERSED);
     leftFollowerMotor.setSensorPhase(DriveConstants.LEFT_SIDE_REVERSED);
     rightLeadMotor.setSensorPhase(DriveConstants.RIGHT_SIDE_REVERSED);
     rightFollowerMotor.setSensorPhase(DriveConstants.RIGHT_SIDE_REVERSED);
+
+    leftLeadMotor.setInverted(DriveConstants.LEFT_SIDE_REVERSED);
+    leftFollowerMotor.setInverted(DriveConstants.LEFT_SIDE_REVERSED);
+    rightLeadMotor.setInverted(DriveConstants.RIGHT_SIDE_REVERSED);
+    rightFollowerMotor.setInverted(DriveConstants.RIGHT_SIDE_REVERSED);
 
     // Sets the distance per pulse for the encoders
     // m_leftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
