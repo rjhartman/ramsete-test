@@ -1,6 +1,5 @@
 package frc.robot.motorcontrol;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import frc.robot.Constants.DriveConstants;
@@ -13,8 +12,10 @@ import frc.robot.Constants.DriveConstants;
 public class Luna_TalonFX extends WPI_TalonFX {
 
     /**
-     * A default constructor needed to compile. DO NOT USE THIS CONSTRUCTOR.
-     * A TalonFX cannot be instantiated without parameters.
+     * A default constructor needed to compile, since WPI_TalonFX doesn't define a
+     * default constructor.
+     * DO NOT USE THIS CONSTRUCTOR. A TalonFX cannot be instantiated without
+     * parameters.
      */
     public Luna_TalonFX() {
         super(-1);
@@ -36,7 +37,7 @@ public class Luna_TalonFX extends WPI_TalonFX {
      * @return the selected sensor's velocity in meters per second.
      */
     public double getRate() {
-        return getSelectedSensorVelocity() * DriveConstants.ENCODER_DISTANCE_PER_PULSE * 10;
+        return getSelectedSensorVelocity() * DriveConstants.ENCODER_DISTANCE_PER_PULSE;
     }
 
     /**
@@ -45,7 +46,7 @@ public class Luna_TalonFX extends WPI_TalonFX {
      * @return the selected sensor's distance in meters.
      */
     public double getDistance() {
-        return getSelectedSensorPosition() * DriveConstants.ENCODER_DISTANCE_PER_PULSE * 10;
+        return getSelectedSensorPosition() * DriveConstants.ENCODER_DISTANCE_PER_PULSE;
     }
 
     /**

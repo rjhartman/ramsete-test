@@ -4,8 +4,7 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -40,32 +39,27 @@ public class DriveSubsystem extends SubsystemBase {
   private final DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors);
 
   // The gyro sensor
-  private final Gyro gyro = new WPI_PigeonIMU(0);
+  private final Gyro gyro = new WPI_PigeonIMU(new TalonSRX(DriveConstants.GYRO_ID));
 
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry odometry;
 
-  private double getAverageRightEncoderDistance() {
-    return (rightLeadMotor.getDistance() + rightFollowerMotor.getDistance()) / 2.0;
-  }
-
-  private double getAverageLeftEncoderDistance() {
-    return (leftLeadMotor.getDistance() + leftFollowerMotor.getDistance()) / 2.0;
-  }
-
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // We need to invert one side of the drivetrain so that positive voltages
-    // result in both sides moving forward. Depending on how your robot's
-    // gearbox is constructed, you might have to invert the left side instead.
-    leftMotors.setInverted(DriveConstants.LEFT_SIDE_REVERSED);
-    rightMotors.setInverted(DriveConstants.RIGHT_SIDE_REVERSED);
+    // result in both sides moving forward.
+    // leftMotors.setInverted(DriveConstants.LEFT_SIDE_REVERSED);
+    // rightMotors.setInverted(DriveConstants.RIGHT_SIDE_REVERSED);
 
-    // Reverse the encoders on the left/right motor,
     leftLeadMotor.setSensorPhase(DriveConstants.LEFT_SIDE_REVERSED);
     leftFollowerMotor.setSensorPhase(DriveConstants.LEFT_SIDE_REVERSED);
     rightLeadMotor.setSensorPhase(DriveConstants.RIGHT_SIDE_REVERSED);
     rightFollowerMotor.setSensorPhase(DriveConstants.RIGHT_SIDE_REVERSED);
+
+    leftLeadMotor.setInverted(DriveConstants.LEFT_SIDE_REVERSED);
+    leftFollowerMotor.setInverted(DriveConstants.LEFT_SIDE_REVERSED);
+    rightLeadMotor.setInverted(DriveConstants.RIGHT_SIDE_REVERSED);
+    rightFollowerMotor.setInverted(DriveConstants.RIGHT_SIDE_REVERSED);
 
     // Sets the distance per pulse for the encoders
     // m_leftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
@@ -80,10 +74,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     if (IOConstants.ENABLE_DIAGNOSTICS) {
       SmartDashboard.putString("Encoder Distances (m)",
-          "L: " + leftLeadMotor.getDistance() + " R: " + rightLeadMotor.getDistance());
+          "L: " + Double.toString(leftLeadMotor.getDistance()) + " R: "
+              + Double.toString(rightLeadMotor.getDistance()));
+      SmartDashboard.putString("Average Encoder Distance (m)",
+          Double.toString(getAverageEncoderDistance()));
       SmartDashboard.putString("Encoder Velocities (m/s)",
-          "L: " + leftLeadMotor.getRate() + " R: " + rightLeadMotor.getRate());
-      SmartDashboard.putString("Gyro Rotation (deg)", this.gyro.getRotation2d().getDegrees() + "");
+          "L: " + Double.toString(leftLeadMotor.getRate()) + " R: " + Double.toString(rightLeadMotor.getRate()));
+      SmartDashboard.putString("Gyro Rotation (deg)", Double.toString(this.gyro.getRotation2d().getDegrees()) + "");
       SmartDashboard.putString("Pose", this.getPose().toString());
     }
 
@@ -148,7 +145,9 @@ public class DriveSubsystem extends SubsystemBase {
   /** Resets the drive encoders to currently read a position of 0. */
   public void resetEncoders() {
     leftLeadMotor.reset();
+    leftFollowerMotor.reset();
     rightLeadMotor.reset();
+    rightFollowerMotor.reset();
   }
 
   /**
@@ -157,8 +156,8 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the average of the two encoder readings
    */
   public double getAverageEncoderDistance() {
-    // Flip the encoder on the left side
-    return (getAverageLeftEncoderDistance() + getAverageRightEncoderDistance()) / 2.0;
+    return (leftLeadMotor.getDistance() + leftFollowerMotor.getDistance() + rightLeadMotor.getDistance()
+        + rightFollowerMotor.getDistance()) / 4.0;
   }
 
   /**
